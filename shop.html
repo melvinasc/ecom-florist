@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All Flowers | Bloom & Co.</title>
+<meta name="description" content="Browse our full range of fresh flower bouquets and arrangements. Filter by occasion, price and flower type.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Shop All Flowers</h1>
+    <p>Fresh bouquets, plants and arrangements — filter to find the perfect fit.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container shop-layout">
+    <aside class="filters">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h4>Filters</h4>
+        <button class="clear-filters" id="clear-filters">Clear all</button>
+      </div>
+
+      <div class="filter-group">
+        <h4>Occasion</h4>
+        <div id="occasion-filters"></div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Flower Type</h4>
+        <div id="type-filters"></div>
+      </div>
+
+      <div class="filter-group">
+        <h4>Price Range</h4>
+        <input type="range" id="price-range" min="0" max="150" value="150">
+        <div class="price-values"><span>$0</span><span id="price-max-label">$150</span></div>
+      </div>
+
+      <div class="filter-group">
+        <label><input type="checkbox" id="samedayOnly"> Same-day delivery only</label>
+      </div>
+    </aside>
+
+    <div>
+      <div class="shop-toolbar">
+        <span class="results-count" id="results-count">Showing all products</span>
+        <select id="sort-select">
+          <option value="featured">Sort: Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Rating</option>
+        </select>
+      </div>
+      <div class="product-grid reveal" id="shop-grid"></div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <h3>No flowers match your filters</h3>
+        <p>Try clearing some filters to see more results.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  const state = { occasions: new Set(), types: new Set(), maxPrice: 150, sameDayOnly: false, sort: "featured" };
+
+  function initFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const occ = params.get("occasion");
+    if (occ) state.occasions.add(occ);
+  }
+
+  function buildFilterUI() {
+    const occasionKeys = Object.keys(OCCASION_LABELS);
+    document.getElementById("occasion-filters").innerHTML = occasionKeys.map(key => `
+      <label><input type="checkbox" value="${key}" class="occ-check" ${state.occasions.has(key) ? "checked" : ""}> ${OCCASION_LABELS[key]}</label>`).join("");
+
+    const types = [...new Set(PRODUCTS.map(p => p.flowerType))];
+    document.getElementById("type-filters").innerHTML = types.map(t => `
+      <label><input type="checkbox" value="${t}" class="type-check"> ${t.charAt(0).toUpperCase() + t.slice(1)}</label>`).join("");
+
+    document.querySelectorAll(".occ-check").forEach(cb => cb.addEventListener("change", () => {
+      cb.checked ? state.occasions.add(cb.value) : state.occasions.delete(cb.value);
+      render();
+    }));
+    document.querySelectorAll(".type-check").forEach(cb => cb.addEventListener("change", () => {
+      cb.checked ? state.types.add(cb.value) : state.types.delete(cb.value);
+      render();
+    }));
+    document.getElementById("price-range").addEventListener("input", (e) => {
+      state.maxPrice = Number(e.target.value);
+      document.getElementById("price-max-label").textContent = "$" + state.maxPrice;
+      render();
+    });
+    document.getElementById("samedayOnly").addEventListener("change", (e) => {
+      state.sameDayOnly = e.target.checked;
+      render();
+    });
+    document.getElementById("sort-select").addEventListener("change", (e) => {
+      state.sort = e.target.value;
+      render();
+    });
+    document.getElementById("clear-filters").addEventListener("click", () => {
+      state.occasions.clear(); state.types.clear(); state.maxPrice = 150; state.sameDayOnly = false; state.sort = "featured";
+      document.getElementById("price-range").value = 150;
+      document.getElementById("price-max-label").textContent = "$150";
+      document.getElementById("samedayOnly").checked = false;
+      document.getElementById("sort-select").value = "featured";
+      buildFilterUI();
+      render();
+    });
+  }
+
+  function getFiltered() {
+    let list = PRODUCTS.filter(p => {
+      if (state.occasions.size && ![...state.occasions].some(o => p.occasion.includes(o))) return false;
+      if (state.types.size && !state.types.has(p.flowerType)) return false;
+      if (p.price > state.maxPrice) return false;
+      if (state.sameDayOnly && !p.sameDay) return false;
+      return true;
+    });
+    if (state.sort === "price-asc") list.sort((a,b) => a.price - b.price);
+    if (state.sort === "price-desc") list.sort((a,b) => b.price - a.price);
+    if (state.sort === "rating") list.sort((a,b) => b.rating - a.rating);
+    return list;
+  }
+
+  function productCardHTML(p) {
+    return `
+      <div class="product-card">
+        <a href="product.html?id=${p.id}" class="thumb">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          ${p.sameDay ? '<span class="badge">Same-Day</span>' : ''}
+        </a>
+        <div class="product-info">
+          <a href="product.html?id=${p.id}"><h3>${p.name}</h3></a>
+          <div class="rating">${renderStars(p.rating)} <span>(${p.reviews})</span></div>
+          <div class="price">$${p.price.toFixed(2)}</div>
+        </div>
+        <button class="btn btn-primary btn-block add-cart-btn" data-id="${p.id}">Add to Cart</button>
+      </div>`;
+  }
+
+  function render() {
+    const list = getFiltered();
+    document.getElementById("shop-grid").innerHTML = list.map(productCardHTML).join("");
+    document.getElementById("results-count").textContent = `Showing ${list.length} of ${PRODUCTS.length} products`;
+    document.getElementById("empty-state").style.display = list.length ? "none" : "block";
+    document.querySelectorAll(".add-cart-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p = PRODUCTS.find(x => x.id === btn.dataset.id);
+        addToCart({ id: p.id, name: p.name, price: p.price, size: "Medium", qty: 1, image: p.image, addons: [], giftMessage: "", deliveryDate: minDeliveryDate() });
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initFromURL();
+    buildFilterUI();
+    render();
+  });
+</script>
+</body>
+</html>

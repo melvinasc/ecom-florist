@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart | Bloom & Co.</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Your Cart</h1>
+    <p>Review your items, choose a delivery date, and check out securely.</p>
+  </div>
+</section>
+
+<section id="cart-section">
+  <div class="container">
+    <div class="cart-layout" id="cart-layout">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Mock Checkout Modal -->
+<div id="checkout-modal" style="display:none;position:fixed;inset:0;background:rgba(44,42,40,0.5);z-index:500;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:24px;padding:40px;max-width:440px;width:100%;text-align:center;">
+    <div style="font-size:56px;margin-bottom:16px;">🌸</div>
+    <h2 style="margin-bottom:12px;">Order Confirmed!</h2>
+    <p style="color:var(--ink-light);margin-bottom:28px;">Thank you for your order. This is a demo checkout — no real payment has been processed. A confirmation email would normally be sent to you.</p>
+    <button class="btn btn-primary btn-block" id="close-modal">Continue Shopping</button>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  function renderCart() {
+    const cart = getCart();
+    const layout = document.getElementById("cart-layout");
+
+    if (!cart.length) {
+      layout.style.gridTemplateColumns = "1fr";
+      layout.innerHTML = `
+        <div class="empty-cart">
+          <div class="emoji">🛒</div>
+          <h2>Your cart is empty</h2>
+          <p style="color:var(--ink-light);margin:12px 0 26px;">Looks like you haven't added any flowers yet.</p>
+          <a href="shop.html" class="btn btn-primary">Start Shopping</a>
+        </div>`;
+      return;
+    }
+
+    layout.style.gridTemplateColumns = "";
+    const itemsHTML = cart.map((item, index) => {
+      const addonsTotal = (item.addons || []).reduce((a, b) => a + b.price, 0);
+      const lineTotal = (item.price + addonsTotal) * item.qty;
+      const addonNames = (item.addons || []).map(a => a.name).join(", ");
+      return `
+        <div class="cart-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div>
+            <h4>${item.name}</h4>
+            <div class="meta">Size: ${item.size}${addonNames ? " · Add-ons: " + addonNames : ""}</div>
+            <div class="meta">Delivery: ${item.deliveryDate || minDeliveryDate()}</div>
+            ${item.giftMessage ? `<div class="meta">💌 "${item.giftMessage}"</div>` : ""}
+            <div class="cart-item-actions">
+              <div class="qty-control">
+                <button class="cart-qty-minus" data-index="${index}">−</button>
+                <input type="text" value="${item.qty}" readonly>
+                <button class="cart-qty-plus" data-index="${index}">+</button>
+              </div>
+              <button class="remove-btn" data-index="${index}">Remove</button>
+            </div>
+          </div>
+          <div class="item-total">$${lineTotal.toFixed(2)}</div>
+        </div>`;
+    }).join("");
+
+    const subtotal = cartTotal();
+    const deliveryFee = subtotal > 0 ? 9.95 : 0;
+    const total = subtotal + deliveryFee;
+
+    layout.innerHTML = `
+      <div>${itemsHTML}</div>
+      <div class="summary-card">
+        <h3 style="margin-bottom:20px;">Order Summary</h3>
+        <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+        <div class="summary-row"><span>Delivery Fee</span><span>$${deliveryFee.toFixed(2)}</span></div>
+        <div class="summary-row total"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+        <button class="btn btn-primary btn-block mt-24" id="checkout-btn" style="padding:15px;">Proceed to Checkout</button>
+        <p style="font-size:12px;color:var(--ink-light);text-align:center;margin-top:12px;">🔒 Secure demo checkout — no real payment is processed.</p>
+      </div>
+    `;
+
+    document.querySelectorAll(".cart-qty-minus").forEach(btn => btn.addEventListener("click", () => {
+      const cart = getCart();
+      const i = Number(btn.dataset.index);
+      updateCartQty(i, cart[i].qty - 1);
+      renderCart();
+    }));
+    document.querySelectorAll(".cart-qty-plus").forEach(btn => btn.addEventListener("click", () => {
+      const cart = getCart();
+      const i = Number(btn.dataset.index);
+      updateCartQty(i, cart[i].qty + 1);
+      renderCart();
+    }));
+    document.querySelectorAll(".remove-btn").forEach(btn => btn.addEventListener("click", () => {
+      removeFromCart(Number(btn.dataset.index));
+      renderCart();
+      showToast("Item removed from cart");
+    }));
+    const checkoutBtn = document.getElementById("checkout-btn");
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener("click", () => {
+        document.getElementById("checkout-modal").style.display = "flex";
+      });
+    }
+  }
+
+  document.getElementById("close-modal").addEventListener("click", () => {
+    saveCart([]);
+    document.getElementById("checkout-modal").style.display = "none";
+    renderCart();
+    window.location.href = "shop.html";
+  });
+
+  document.addEventListener("DOMContentLoaded", renderCart);
+</script>
+</body>
+</html>

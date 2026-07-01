@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us | Bloom & Co.</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Get In Touch</h1>
+    <p>Questions about an order, a custom arrangement, or a big event? We'd love to hear from you.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container contact-layout">
+    <div class="reveal">
+      <form class="form-card" id="contact-form" novalidate style="margin:0;max-width:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="c-name">Full Name</label>
+            <input type="text" id="c-name" name="name" required>
+            <span class="error-msg" data-for="name"></span>
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email Address</label>
+            <input type="email" id="c-email" name="email" required>
+            <span class="error-msg" data-for="email"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="c-phone">Phone Number</label>
+          <input type="tel" id="c-phone" name="phone" placeholder="04xx xxx xxx">
+        </div>
+        <div class="form-group">
+          <label for="c-subject">Subject</label>
+          <select id="c-subject" name="subject">
+            <option>Order Enquiry</option>
+            <option>Custom Arrangement</option>
+            <option>Wedding &amp; Events</option>
+            <option>Delivery Issue</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="5" required></textarea>
+          <span class="error-msg" data-for="message"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+        <div class="form-success" id="contact-success">Thanks for reaching out! We'll respond within one business day. 🌷</div>
+      </form>
+    </div>
+
+    <div class="reveal">
+      <div class="contact-info-card">
+        <h3>Visit or Contact Us</h3>
+        <div class="contact-row"><span class="icon">📍</span><span>123 Blossom Street, Sydney NSW 2000</span></div>
+        <div class="contact-row"><span class="icon">📞</span><a href="tel:+61200000000">(02) 0000 0000</a></div>
+        <div class="contact-row"><span class="icon">✉️</span><a href="mailto:hello@bloomandco.com">hello@bloomandco.com</a></div>
+        <a href="https://wa.me/61400000000" target="_blank" rel="noopener" class="whatsapp-btn">💬 Chat on WhatsApp</a>
+
+        <ul class="hours-list">
+          <li><span>Monday – Friday</span><span>8:00 AM – 6:00 PM</span></li>
+          <li><span>Saturday</span><span>9:00 AM – 4:00 PM</span></li>
+          <li><span>Sunday</span><span>10:00 AM – 2:00 PM</span></li>
+          <li><span>Public Holidays</span><span>Limited hours</span></li>
+        </ul>
+
+        <div class="map-placeholder">🗺️ Store location map — 123 Blossom Street, Sydney NSW</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  document.getElementById("contact-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const form = e.target;
+    if (validateForm(form)) {
+      document.getElementById("contact-success").classList.add("show");
+      form.reset();
+      showToast("Message sent successfully!");
+    }
+  });
+</script>
+</body>
+</html>

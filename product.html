@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Details | Bloom & Co.</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section>
+  <div class="container product-detail" id="product-detail">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+<section class="bg-cream" id="related-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">You May Also Like</span>
+      <h2>Complete the gesture</h2>
+    </div>
+    <div class="product-grid" id="related-products"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  const ADDONS = [
+    { id: "vase", name: "Glass Vase", price: 12 },
+    { id: "chocolates", name: "Belgian Chocolates", price: 9.5 },
+    { id: "card", name: "Greeting Card", price: 4 }
+  ];
+  const SIZES = [
+    { name: "Small", modifier: -10 },
+    { name: "Medium", modifier: 0 },
+    { name: "Large", modifier: 18 }
+  ];
+
+  const selection = { size: "Medium", addons: [], qty: 1, activeImage: 0, giftMessage: "", deliveryDate: "" };
+
+  function getProduct() {
+    const id = new URLSearchParams(window.location.search).get("id") || "p1";
+    return PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+  }
+
+  function sizePrice(base, sizeName) {
+    const s = SIZES.find(x => x.name === sizeName);
+    return base + (s ? s.modifier : 0);
+  }
+
+  function render() {
+    const p = getProduct();
+    selection.deliveryDate = minDeliveryDate();
+    const currentPrice = sizePrice(p.price, selection.size);
+
+    document.title = `${p.name} | Bloom & Co.`;
+
+    document.getElementById("product-detail").innerHTML = `
+      <div class="pd-gallery">
+        <div class="gallery-main"><img id="main-image" src="${p.gallery[0]}" alt="${p.name}"></div>
+        <div class="gallery-thumbs" id="gallery-thumbs">
+          ${p.gallery.map((img, i) => `<img src="${img}" class="${i === 0 ? 'active' : ''}" data-index="${i}" alt="thumb">`).join("")}
+        </div>
+      </div>
+      <div class="pd-info">
+        ${p.sameDay ? '<div class="same-day-badge">✓ Eligible for Same-Day Delivery</div>' : ''}
+        <h1>${p.name}</h1>
+        <div class="rating">${renderStars(p.rating)} <span>(${p.reviews} reviews)</span></div>
+        <div class="pd-price" id="pd-price">$${currentPrice.toFixed(2)}</div>
+        <p class="pd-desc">${p.description}</p>
+
+        <div class="pd-block">
+          <h4>Choose a Size</h4>
+          <div class="size-options" id="size-options">
+            ${SIZES.map(s => `<div class="size-opt ${s.name === selection.size ? 'selected' : ''}" data-size="${s.name}">${s.name} ${s.modifier ? (s.modifier > 0 ? '+$'+s.modifier : '-$'+Math.abs(s.modifier)) : ''}</div>`).join("")}
+          </div>
+        </div>
+
+        <div class="pd-block">
+          <h4>Add-ons</h4>
+          <div class="addon-options" id="addon-options">
+            ${ADDONS.map(a => `<div class="addon-opt" data-id="${a.id}">${a.name} (+$${a.price.toFixed(2)})</div>`).join("")}
+          </div>
+        </div>
+
+        <div class="pd-block">
+          <h4>Gift Message <span style="font-weight:400;color:var(--ink-light);">(optional)</span></h4>
+          <textarea id="gift-message" maxlength="200" placeholder="Write a heartfelt note to include with your delivery..."></textarea>
+          <div class="char-count"><span id="char-count">0</span>/200</div>
+        </div>
+
+        <div class="pd-block">
+          <h4>Delivery Date</h4>
+          <input type="date" id="delivery-date" min="${minDeliveryDate()}" value="${minDeliveryDate()}">
+          <p style="font-size:12.5px;color:var(--ink-light);margin-top:6px;">${isSameDayAvailable() ? "✓ Order within cut-off for same-day delivery." : "Cut-off has passed — earliest delivery is tomorrow."}</p>
+        </div>
+
+        <div class="qty-row">
+          <h4 style="font-size:15px;">Quantity</h4>
+          <div class="qty-control">
+            <button id="qty-minus">−</button>
+            <input type="text" id="qty-value" value="1" readonly>
+            <button id="qty-plus">+</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="add-to-cart-btn" style="padding:16px;font-size:16px;">Add to Cart — $<span id="total-price">${currentPrice.toFixed(2)}</span></button>
+      </div>
+    `;
+
+    document.getElementById("gallery-thumbs").querySelectorAll("img").forEach(img => {
+      img.addEventListener("click", () => {
+        document.getElementById("main-image").src = p.gallery[img.dataset.index];
+        document.querySelectorAll("#gallery-thumbs img").forEach(i => i.classList.remove("active"));
+        img.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("#size-options .size-opt").forEach(opt => {
+      opt.addEventListener("click", () => {
+        selection.size = opt.dataset.size;
+        document.querySelectorAll("#size-options .size-opt").forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        updateTotal(p);
+      });
+    });
+
+    document.querySelectorAll("#addon-options .addon-opt").forEach(opt => {
+      opt.addEventListener("click", () => {
+        opt.classList.toggle("selected");
+        const addon = ADDONS.find(a => a.id === opt.dataset.id);
+        const idx = selection.addons.findIndex(a => a.id === addon.id);
+        if (idx > -1) selection.addons.splice(idx, 1); else selection.addons.push(addon);
+        updateTotal(p);
+      });
+    });
+
+    document.getElementById("gift-message").addEventListener("input", (e) => {
+      selection.giftMessage = e.target.value;
+      document.getElementById("char-count").textContent = e.target.value.length;
+    });
+
+    document.getElementById("delivery-date").addEventListener("change", (e) => {
+      selection.deliveryDate = e.target.value;
+    });
+
+    document.getElementById("qty-minus").addEventListener("click", () => {
+      selection.qty = Math.max(1, selection.qty - 1);
+      document.getElementById("qty-value").value = selection.qty;
+      updateTotal(p);
+    });
+    document.getElementById("qty-plus").addEventListener("click", () => {
+      selection.qty += 1;
+      document.getElementById("qty-value").value = selection.qty;
+      updateTotal(p);
+    });
+
+    document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+      addToCart({
+        id: p.id, name: p.name, price: sizePrice(p.price, selection.size),
+        size: selection.size, qty: selection.qty, image: p.image,
+        addons: selection.addons, giftMessage: selection.giftMessage, deliveryDate: selection.deliveryDate
+      });
+    });
+
+    // Related products
+    const related = PRODUCTS.filter(x => x.id !== p.id && x.occasion.some(o => p.occasion.includes(o))).slice(0, 4);
+    document.getElementById("related-products").innerHTML = related.map(r => `
+      <div class="product-card">
+        <a href="product.html?id=${r.id}" class="thumb"><img src="${r.image}" alt="${r.name}"></a>
+        <div class="product-info">
+          <a href="product.html?id=${r.id}"><h3>${r.name}</h3></a>
+          <div class="rating">${renderStars(r.rating)} <span>(${r.reviews})</span></div>
+          <div class="price">$${r.price.toFixed(2)}</div>
+        </div>
+      </div>`).join("");
+  }
+
+  function updateTotal(p) {
+    const addonsTotal = selection.addons.reduce((a, b) => a + b.price, 0);
+    const total = (sizePrice(p.price, selection.size) + addonsTotal) * selection.qty;
+    document.getElementById("total-price").textContent = total.toFixed(2);
+    document.getElementById("pd-price").textContent = "$" + (sizePrice(p.price, selection.size) + addonsTotal).toFixed(2);
+  }
+
+  document.addEventListener("DOMContentLoaded", render);
+</script>
+</body>
+</html>

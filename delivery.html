@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Same-Day Delivery | Bloom & Co.</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<div class="urgency-banner" id="urgency-banner"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Same-Day Flower Delivery</h1>
+    <p>Order before the daily cut-off and we'll hand-deliver fresh flowers to your recipient today.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">How It Works</span>
+      <h2>Three simple steps</h2>
+    </div>
+    <div class="delivery-steps reveal">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Order by 2:00 PM</h3>
+        <p style="color:var(--ink-light);font-size:14.5px;margin-top:10px;">Place your order before the daily cut-off time for your delivery zone.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Freshly Arranged</h3>
+        <p style="color:var(--ink-light);font-size:14.5px;margin-top:10px;">Our florists hand-tie your bouquet the same morning using the freshest stems.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Delivered With Care</h3>
+        <p style="color:var(--ink-light);font-size:14.5px;margin-top:10px;">Delivered directly to your recipient's door, same day, guaranteed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-cream">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Coverage &amp; Fees</span>
+      <h2>Delivery Zones</h2>
+    </div>
+    <table class="zones-table reveal">
+      <thead><tr><th>Zone</th><th>Suburbs / Area</th><th>Cut-off Time</th><th>Delivery Fee</th></tr></thead>
+      <tbody>
+        <tr><td>Zone 1</td><td>Sydney CBD &amp; Inner City</td><td>2:00 PM</td><td>$9.95</td></tr>
+        <tr><td>Zone 2</td><td>Eastern &amp; Inner West Suburbs</td><td>1:00 PM</td><td>$12.95</td></tr>
+        <tr><td>Zone 3</td><td>North Shore &amp; Northern Beaches</td><td>1:00 PM</td><td>$14.95</td></tr>
+        <tr><td>Zone 4</td><td>Western Sydney</td><td>12:00 PM</td><td>$16.95</td></tr>
+        <tr><td>Zone 5</td><td>Greater Metro (Next Day Only)</td><td>N/A</td><td>$19.95</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Good to Know</span>
+      <h2>Eligibility &amp; FAQs</h2>
+    </div>
+    <div style="max-width:760px;margin:0 auto;" class="reveal">
+      <details class="faq-item" open>
+        <summary>What counts as "same-day eligible"?</summary>
+        <p>Products marked with a green "Same-Day" badge on the shop and product pages can be ordered and delivered on the same calendar day, provided your order is placed before your zone's cut-off time.</p>
+      </details>
+      <details class="faq-item">
+        <summary>What happens if I order after the cut-off?</summary>
+        <p>No problem — your order will simply be scheduled for the next available delivery day. You'll be able to choose the exact date at checkout.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I choose a specific delivery time?</summary>
+        <p>We deliver within business hours (9:00 AM – 6:00 PM). While we can't guarantee an exact hour, you can leave delivery instructions at checkout.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do you deliver on weekends and public holidays?</summary>
+        <p>Yes, we deliver 7 days a week including most public holidays, though cut-off times may be earlier — check the calendar at checkout for exact times.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="bg-pink">
+  <div class="container text-center reveal">
+    <h2>Ready to send flowers today?</h2>
+    <p style="color:var(--ink-light);margin:12px 0 26px;">Browse same-day eligible bouquets and get them delivered before the day is done.</p>
+    <a href="shop.html?occasion=bestsellers" class="btn btn-primary">Shop Same-Day Flowers</a>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("urgency-banner");
+    if (isSameDayAvailable()) {
+      const now = new Date();
+      const cutoff = new Date();
+      cutoff.setHours(14, 0, 0, 0);
+      const minsLeft = Math.round((cutoff - now) / 60000);
+      banner.innerHTML = `⏰ <strong>Order in the next ${minsLeft > 0 ? minsLeft : 0} minutes</strong> for guaranteed same-day delivery!`;
+    } else {
+      banner.innerHTML = `⏰ Today's same-day cut-off has passed — <strong>order now for delivery tomorrow.</strong>`;
+    }
+  });
+</script>
+</body>
+</html>

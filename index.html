@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom & Co. | Fresh Flowers Delivered Same Day</title>
+<meta name="description" content="Order fresh, hand-tied flowers online with same-day delivery. Birthday, romance, sympathy & wedding flowers — beautifully arranged, delivered with care.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-content">
+      <span class="eyebrow">Bloom &amp; Co. Florist</span>
+      <h1>Fresh Flowers <br>Delivered <em>Same Day</em></h1>
+      <p>Hand-tied by local florists, cut fresh every morning, and delivered to your door — because the moments that matter can't wait.</p>
+      <div class="hero-ctas">
+        <a href="shop.html" class="btn btn-primary">Shop Now</a>
+        <a href="delivery.html" class="btn btn-outline">Send Flowers Today</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=900&q=80" alt="Fresh rose bouquet">
+      <div class="hero-badge">
+        <span class="icon">🚚</span>
+        <div><strong>Order by 2:00 PM</strong><span>for same-day delivery</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY TILES -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Shop by Occasion</span>
+      <h2>Flowers for every moment</h2>
+      <p>Whatever the reason, we've got the perfect arrangement.</p>
+    </div>
+    <div class="category-tiles reveal">
+      <a href="shop.html?occasion=birthday" class="cat-tile"><span class="emoji">🎂</span><h4>Birthday</h4></a>
+      <a href="shop.html?occasion=romance" class="cat-tile"><span class="emoji">💗</span><h4>Love &amp; Romance</h4></a>
+      <a href="shop.html?occasion=sympathy" class="cat-tile"><span class="emoji">🕊️</span><h4>Sympathy</h4></a>
+      <a href="shop.html?occasion=bestsellers" class="cat-tile"><span class="emoji">⭐</span><h4>Best Sellers</h4></a>
+      <a href="delivery.html" class="cat-tile"><span class="emoji">🚚</span><h4>Same Day Delivery</h4></a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="bg-cream">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Handpicked For You</span>
+      <h2>Our Best Sellers</h2>
+      <p>Customer favourites, arranged fresh and ready for same-day delivery.</p>
+    </div>
+    <div class="product-grid reveal" id="featured-products"></div>
+    <div class="text-center mt-24">
+      <a href="shop.html" class="btn btn-dark">View All Flowers</a>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY BANNER -->
+<section>
+  <div class="container">
+    <div class="delivery-banner reveal">
+      <div class="db-main">
+        <h3>Guaranteed Same-Day Delivery</h3>
+        <p>Order before the cut-off and we'll hand-deliver your flowers today — fresh, on time, every time.</p>
+        <a href="delivery.html" class="btn btn-primary mt-24">Delivery Details</a>
+      </div>
+      <div class="db-item"><span class="num">2:00 PM</span><span class="label">Daily order cut-off</span></div>
+      <div class="db-item"><span class="num">15+</span><span class="label">Delivery zones covered</span></div>
+      <div class="db-item"><span class="num">98%</span><span class="label">On-time delivery rate</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="bg-pink">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Loved By Thousands</span>
+      <h2>What our customers say</h2>
+    </div>
+    <div class="reviews-grid reveal" id="reviews-grid"></div>
+  </div>
+</section>
+
+<!-- INSTAGRAM GALLERY -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">@bloomandco</span>
+      <h2>Follow our floral journey</h2>
+    </div>
+    <div class="insta-gallery reveal" id="insta-gallery"></div>
+  </div>
+</section>
+
+<!-- WEDDING PROMO -->
+<section>
+  <div class="container">
+    <div class="promo-banner reveal">
+      <div class="promo-content">
+        <span class="eyebrow">Weddings &amp; Events</span>
+        <h2>Floral styling for your biggest day</h2>
+        <p>From bridal bouquets to full event styling, our design team creates unforgettable florals tailored to your vision.</p>
+        <a href="weddings.html" class="btn btn-primary">Explore Wedding Packages</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  function productCardHTML(p) {
+    return `
+      <div class="product-card">
+        <a href="product.html?id=${p.id}" class="thumb">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          ${p.sameDay ? '<span class="badge">Same-Day</span>' : ''}
+        </a>
+        <div class="product-info">
+          <a href="product.html?id=${p.id}"><h3>${p.name}</h3></a>
+          <div class="rating">${renderStars(p.rating)} <span>(${p.reviews})</span></div>
+          <div class="price">$${p.price.toFixed(2)}</div>
+        </div>
+        <button class="btn btn-primary btn-block add-cart-btn" data-id="${p.id}">Add to Cart</button>
+      </div>`;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const featured = PRODUCTS.filter(p => p.occasion.includes("bestsellers")).slice(0, 8);
+    document.getElementById("featured-products").innerHTML = featured.map(productCardHTML).join("");
+
+    document.getElementById("reviews-grid").innerHTML = REVIEWS.map(r => `
+      <div class="review-card">
+        <div class="stars">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</div>
+        <p>"${r.text}"</p>
+        <strong>${r.name}</strong>
+      </div>`).join("");
+
+    document.getElementById("insta-gallery").innerHTML = GALLERY_IMAGES.map(img => `
+      <a href="#" class="insta-item"><img src="${img}" alt="Bloom & Co. gallery"></a>`).join("");
+
+    document.querySelectorAll(".add-cart-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const p = PRODUCTS.find(x => x.id === btn.dataset.id);
+        addToCart({ id: p.id, name: p.name, price: p.price, size: "Medium", qty: 1, image: p.image, addons: [], giftMessage: "", deliveryDate: minDeliveryDate() });
+      });
+    });
+  });
+</script>
+</body>
+</html>

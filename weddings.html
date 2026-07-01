@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weddings & Events | Bloom & Co.</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Weddings &amp; Events</h1>
+    <p>Bespoke floral design for weddings, corporate events, and everything worth celebrating.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Packages</span>
+      <h2>Wedding Floral Packages</h2>
+    </div>
+    <div class="packages-grid reveal">
+      <div class="package-card">
+        <h3>Essential</h3>
+        <div class="price">$650</div>
+        <ul>
+          <li>Bridal bouquet</li>
+          <li>2 bridesmaid bouquets</li>
+          <li>2 boutonnieres</li>
+          <li>Ceremony arch accent</li>
+        </ul>
+        <a href="#inquiry-form" class="btn btn-outline btn-block" style="border-color:var(--pink-600);color:var(--pink-700);">Enquire Now</a>
+      </div>
+      <div class="package-card featured">
+        <h3>Signature</h3>
+        <div class="price">$1,450</div>
+        <ul>
+          <li>Bridal &amp; 4 bridesmaid bouquets</li>
+          <li>4 boutonnieres, 2 corsages</li>
+          <li>Full ceremony arch styling</li>
+          <li>10 reception centrepieces</li>
+          <li>On-site delivery &amp; setup</li>
+        </ul>
+        <a href="#inquiry-form" class="btn btn-primary btn-block">Enquire Now</a>
+      </div>
+      <div class="package-card">
+        <h3>Luxury</h3>
+        <div class="price">$3,200+</div>
+        <ul>
+          <li>Fully custom design consultation</li>
+          <li>Unlimited bouquets &amp; boutonnieres</li>
+          <li>Full venue floral styling</li>
+          <li>Installation &amp; teardown crew</li>
+          <li>Dedicated event florist</li>
+        </ul>
+        <a href="#inquiry-form" class="btn btn-outline btn-block" style="border-color:var(--pink-600);color:var(--pink-700);">Enquire Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-cream">
+  <div class="container story-block reveal">
+    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=800&q=80" alt="Bridal bouquet">
+    <div>
+      <span class="eyebrow" style="color:var(--pink-600);text-transform:uppercase;font-weight:600;">Bridal Bouquets</span>
+      <h2 style="margin:12px 0 16px;">Made to match your vision</h2>
+      <p style="color:var(--ink-light);margin-bottom:16px;">From cascading garden-style bouquets to compact modern posies, every bridal bouquet is designed around your colour palette, dress, and personality — with a complementary preserved keepsake option available.</p>
+      <a href="shop.html?occasion=romance" class="btn btn-dark">View Bouquet Styles</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Event Styling</span>
+      <h2>Full-Service Event Floral Styling</h2>
+      <p>Corporate launches, engagement parties, milestone birthdays — our styling team designs and installs florals for events of any scale.</p>
+    </div>
+    <div class="mission-grid reveal">
+      <div class="mission-card">
+        <div class="emoji">🎉</div>
+        <h4>Event Consultations</h4>
+        <p style="color:var(--ink-light);font-size:14px;margin-top:8px;">One-on-one design sessions to plan your floral theme and budget.</p>
+      </div>
+      <div class="mission-card">
+        <div class="emoji">🏛️</div>
+        <h4>Venue Styling</h4>
+        <p style="color:var(--ink-light);font-size:14px;margin-top:8px;">Arches, table runners, aisle florals, and statement installations.</p>
+      </div>
+      <div class="mission-card">
+        <div class="emoji">🚚</div>
+        <h4>Delivery &amp; Setup</h4>
+        <p style="color:var(--ink-light);font-size:14px;margin-top:8px;">Full delivery, on-site setup, and post-event collection included.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-pink" id="inquiry-form">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Let's Plan Together</span>
+      <h2>Request a Wedding &amp; Event Quote</h2>
+      <p>Tell us about your event and our floral design team will be in touch within 24 hours.</p>
+    </div>
+    <form class="form-card reveal" id="wedding-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="w-name">Full Name</label>
+          <input type="text" id="w-name" name="name" required>
+          <span class="error-msg" data-for="name"></span>
+        </div>
+        <div class="form-group">
+          <label for="w-email">Email Address</label>
+          <input type="email" id="w-email" name="email" required>
+          <span class="error-msg" data-for="email"></span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="w-date">Event Date</label>
+          <input type="date" id="w-date" name="eventDate" required>
+          <span class="error-msg" data-for="eventDate"></span>
+        </div>
+        <div class="form-group">
+          <label for="w-package">Package Interest</label>
+          <select id="w-package" name="package">
+            <option>Essential</option>
+            <option selected>Signature</option>
+            <option>Luxury</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="w-message">Tell us about your event</label>
+        <textarea id="w-message" name="message" rows="4" required placeholder="Venue, guest count, colour palette, style inspiration..."></textarea>
+        <span class="error-msg" data-for="message"></span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Submit Enquiry</button>
+      <div class="form-success" id="wedding-success">Thank you! Your enquiry has been received — our design team will reach out within 24 hours. 🌸</div>
+    </form>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script>
+  document.getElementById("wedding-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const form = e.target;
+    if (validateForm(form)) {
+      document.getElementById("wedding-success").classList.add("show");
+      form.reset();
+      showToast("Enquiry sent successfully!");
+    }
+  });
+</script>
+</body>
+</html>
